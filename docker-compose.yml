@@ -1,0 +1,43 @@
+version: '3.5'
+name: host
+services:
+  nginx:
+    container_name: host_nginx
+    image: fholzer/nginx-brotli
+    ports:
+     - "80:80"
+     - "443:443"
+     - "4444:4444"
+    volumes:
+      - ./default:/etc/nginx/default
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      local:
+    links:
+      - syncthing
+    depends_on:
+      - syncthing
+    restart: always
+
+  syncthing:
+    image: lscr.io/linuxserver/syncthing:latest
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - ./syncthingconfig:/config
+      - /mnt/storage/inbox:/inbox
+    ports:
+      - 22000:22000/tcp
+      - 22000:22000/udp
+      - 21027:21027/udp
+    restart: unless-stopped
+    networks:
+      local:
+
+networks:
+  local:
+    driver: bridge
