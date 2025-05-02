@@ -125,7 +125,8 @@ services:
       - "/mnt/storage/photo:/photoprism/originals/synology"             # Original media files (DO NOT REMOVE)
       - "/mnt/storage/Share/photoprism/storage:/photoprism/storage"
     user: root
-
+    restart: always
+    
   ## Database Server (recommended)
   ## see https://docs.photoprism.app/getting-started/faq/#should-i-use-sqlite-mariadb-or-mysql
   mariadb:
